@@ -20,6 +20,9 @@ function App(): JSX.Element {
             const displayName = localStorage.getItem(LocalStorageKeys.displayName);
             dispatch(setUserDetails({ displayName: displayName ?? '', logged: true }));
         }
+        else {
+            dispatch(setUserDetails({ displayName: '', logged: false }));
+        }
     }, []);
 
     const isLogged = useAppSelector(selectUserLogged);
