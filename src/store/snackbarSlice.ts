@@ -23,6 +23,6 @@ export const snackbarSlice = createSlice({
 
 export const { setSnackbar } = snackbarSlice.actions;
 
-export const selectSnackbar = (state: RootState) => state.snackbar;
+export const selectSnackbar = (state: RootState) : SnackbarState => state.snackbar;
 
 export default snackbarSlice.reducer;

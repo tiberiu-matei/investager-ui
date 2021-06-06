@@ -22,6 +22,6 @@ export const userSlice = createSlice({
 
 export const { setUserDetails } = userSlice.actions;
 
-export const selectUserLogged = (state: RootState) => state.user.logged;
+export const selectUserLogged = (state: RootState): boolean | null => state.user.logged;
 
 export default userSlice.reducer;
