@@ -1,6 +1,6 @@
 import { CssBaseline } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/styles";
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import "./App.css";
 import { Home } from "./components/global/Home";
@@ -14,11 +14,13 @@ import { theme } from "./theme";
 function App(): JSX.Element {
     const dispatch = useAppDispatch();
 
-    const refreshToken = localStorage.getItem(LocalStorageKeys.refreshToken);
-    if (refreshToken) {
-        const displayName = localStorage.getItem(LocalStorageKeys.displayName);
-        dispatch(setUserDetails({ displayName: displayName ?? '', logged: true }));
-    }
+    useEffect(() => {
+        const refreshToken = localStorage.getItem(LocalStorageKeys.refreshToken);
+        if (refreshToken) {
+            const displayName = localStorage.getItem(LocalStorageKeys.displayName);
+            dispatch(setUserDetails({ displayName: displayName ?? '', logged: true }));
+        }
+    }, []);
 
     const isLogged = useAppSelector(selectUserLogged);
 
@@ -26,7 +28,8 @@ function App(): JSX.Element {
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <InvestagerSnackbar />
-            {!isLogged && <Router>
+            {isLogged === null && <></>}
+            {isLogged === false && <Router>
                 <Switch>
                     <Route path="/register">
                         <Register />

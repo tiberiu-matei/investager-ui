@@ -3,10 +3,10 @@ import { RootState } from '../store/store';
 
 export interface UserState {
     displayName: string;
-    logged: boolean;
+    logged: boolean | null;
 }
 
-const initialState: UserState = { displayName: '', logged: false };
+const initialState: UserState = { displayName: '', logged: null };
 
 export const userSlice = createSlice({
     name: 'user',
