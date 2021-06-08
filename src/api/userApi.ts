@@ -1,6 +1,6 @@
 import axios from "axios";
 import { ApiBaseRoutes } from "../models/apiBaseRoutes";
-import { LoginRequest, LoginResponse, RefreshTokenRequest, RefreshTokenResponse, RegisterRequest, RegisterResponse, UpdateUserRequest, User } from "../models/user";
+import { LoginRequest, LoginResponse, RefreshTokenRequest, RefreshTokenResponse, RegisterRequest, RegisterResponse, UpdateThemeRequest, UpdateUserRequest, User } from "../models/user";
 import { GetInvestagerConfigWithBearer } from "./requestConfigs";
 
 export async function Get(): Promise<User> {
@@ -28,7 +28,11 @@ export async function RefreshToken(request: RefreshTokenRequest): Promise<Refres
 }
 
 export async function Update(request: UpdateUserRequest): Promise<void> {
-    await axios.put(`${ApiBaseRoutes.user}/login`, request, GetInvestagerConfigWithBearer());
+    await axios.put(`${ApiBaseRoutes.user}`, request, GetInvestagerConfigWithBearer());
+}
+
+export async function UpdateTheme(request: UpdateThemeRequest): Promise<void> {
+    await axios.put(`${ApiBaseRoutes.user}/theme`, request, GetInvestagerConfigWithBearer());
 }
 
 export async function Delete(): Promise<void> {

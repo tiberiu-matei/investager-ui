@@ -6,3 +6,5 @@ export * from './loginResponse';
 export * from './refreshTokenRequest';
 export * from './refreshTokenResponse';
 export * from './updateUserRequest';
+export * from './updateThemeRequest';
+export * from './themeName';

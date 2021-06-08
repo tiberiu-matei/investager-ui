@@ -1,36 +1,20 @@
-import { Box, CssBaseline } from "@material-ui/core";
-import { ThemeProvider } from "@material-ui/styles";
-import React, { useEffect } from "react";
+import { Box } from "@material-ui/core";
+import React from "react";
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import "./App.css";
+import { AppTheme } from "./components/global/AppTheme";
 import { Header } from "./components/global/Header";
 import { Home } from "./components/global/Home";
 import { Snackbar as InvestagerSnackbar } from "./components/global/Snackbar";
 import { Login, Register } from "./components/user";
-import { LocalStorageKeys } from "./models/localStorageKeys";
-import { useAppDispatch, useAppSelector } from "./store/hooks";
-import { selectUserLogged, setUserDetails } from "./store/userSlice";
-import { theme } from "./theme";
+import { useAppSelector } from "./store/hooks";
+import { selectUserLogged } from "./store/userSlice";
 
 function App(): JSX.Element {
-    const dispatch = useAppDispatch();
-
-    useEffect(() => {
-        const refreshToken = localStorage.getItem(LocalStorageKeys.refreshToken);
-        if (refreshToken) {
-            const displayName = localStorage.getItem(LocalStorageKeys.displayName);
-            dispatch(setUserDetails({ displayName: displayName ?? '', logged: true }));
-        }
-        else {
-            dispatch(setUserDetails({ displayName: '', logged: false }));
-        }
-    }, []);
-
     const isLogged = useAppSelector(selectUserLogged);
 
     return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
+        <AppTheme>
             <InvestagerSnackbar />
             <Router>
                 <Box height="100%" display="flex" flexDirection="column">
@@ -58,7 +42,7 @@ function App(): JSX.Element {
                     </Box>
                 </Box>
             </Router>
-        </ThemeProvider>
+        </AppTheme>
     );
 }
 

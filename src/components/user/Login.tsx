@@ -6,7 +6,7 @@ import { UserApi } from '../../api';
 import { LocalStorageKeys } from '../../models/localStorageKeys';
 import { LoginRequest } from '../../models/user';
 import { useAppDispatch } from '../../store/hooks';
-import { setUserDetails } from '../../store/userSlice';
+import { setUserDetails, setUserTheme } from '../../store/userSlice';
 import { CenteredCard } from '../global/CenteredCard';
 
 type FormData = {
@@ -42,8 +42,10 @@ export function Login(): JSX.Element {
         localStorage.setItem(LocalStorageKeys.accessToken, response.accessToken);
         localStorage.setItem(LocalStorageKeys.refreshToken, response.refreshToken);
         localStorage.setItem(LocalStorageKeys.displayName, response.displayName);
+        localStorage.setItem(LocalStorageKeys.theme, response.theme);
 
         dispatch(setUserDetails({ displayName: response.displayName, logged: true }));
+        dispatch(setUserTheme(response.theme));
 
         history.push('/');
     });
@@ -57,7 +59,7 @@ export function Login(): JSX.Element {
                     </Box>
 
                     <Box mt="10px">
-                        <Typography className={classes.textAlign} variant="h6" >Login</Typography>
+                        <Typography className={classes.textAlign} variant="h6" >Log In</Typography>
                     </Box>
 
                     <Box mt="10px">
