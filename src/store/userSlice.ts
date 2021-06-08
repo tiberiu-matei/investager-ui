@@ -1,12 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { LocalStorageKeys } from '../models/localStorageKeys';
+import { ThemeName } from '../models/user';
 import { RootState } from '../store/store';
 
 export interface UserState {
     displayName: string;
     logged: boolean | null;
+    theme: ThemeName;
 }
 
-const initialState: UserState = { displayName: '', logged: null };
+const initialState: UserState = {
+    displayName: localStorage.getItem(LocalStorageKeys.displayName) ?? '',
+    logged: localStorage.getItem(LocalStorageKeys.refreshToken) !== null,
+    theme: <ThemeName>(localStorage.getItem(LocalStorageKeys.theme) ?? 'None'),
+};
 
 export const userSlice = createSlice({
     name: 'user',
@@ -17,11 +24,16 @@ export const userSlice = createSlice({
             state.displayName = displayName;
             state.logged = logged;
         },
+        setUserTheme: (state, action: PayloadAction<ThemeName>) => {
+            state.theme = action.payload;
+        }
     },
 });
 
-export const { setUserDetails } = userSlice.actions;
+export const { setUserDetails, setUserTheme } = userSlice.actions;
 
 export const selectUserLogged = (state: RootState): boolean | null => state.user.logged;
+
+export const selectUserTheme = (state: RootState): ThemeName => state.user.theme;
 
 export default userSlice.reducer;

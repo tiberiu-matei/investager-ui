@@ -1,9 +1,11 @@
 import { AppBar, IconButton, makeStyles, Menu, MenuItem, Toolbar, Typography } from '@material-ui/core';
-import { AccountCircle } from '@material-ui/icons';
+import { AccountCircle, WbSunny, WbSunnyOutlined } from '@material-ui/icons';
 import React from 'react';
 import { useHistory } from 'react-router';
+import { UserApi } from '../../api';
+import { ThemeName } from '../../models/user';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { selectUserLogged, setUserDetails } from '../../store/userSlice';
+import { selectUserLogged, selectUserTheme, setUserDetails, setUserTheme } from '../../store/userSlice';
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -12,12 +14,16 @@ const useStyles = makeStyles(() => ({
     title: {
         flexGrow: 1,
     },
+    themeMargin: {
+        marginRight: '20px',
+    },
 }));
 
 export function Header(): JSX.Element {
     const dispatch = useAppDispatch();
     const history = useHistory();
     const isLogged = useAppSelector(selectUserLogged);
+    const theme = useAppSelector(selectUserTheme);
 
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
@@ -25,6 +31,11 @@ export function Header(): JSX.Element {
 
     const handleMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
+    };
+
+    const handleTheme = async (theme: ThemeName) => {
+        await UserApi.UpdateTheme({ theme: theme });
+        dispatch(setUserTheme(theme));
     };
 
     const handleClose = () => {
@@ -35,6 +46,7 @@ export function Header(): JSX.Element {
         setAnchorEl(null);
         localStorage.clear();
         dispatch(setUserDetails({ displayName: '', logged: false }));
+        dispatch(setUserTheme('None'));
         history.push('/');
     }
 
@@ -46,6 +58,22 @@ export function Header(): JSX.Element {
                 </Typography>
                 {isLogged && (
                     <div>
+                        {theme !== 'Light' && <IconButton
+                            className={classes.themeMargin}
+                            aria-label="theme"
+                            onClick={() => handleTheme('Light')}
+                        >
+                            <WbSunny />
+                        </IconButton>}
+
+                        {theme === 'Light' && <IconButton
+                            className={classes.themeMargin}
+                            aria-label="theme"
+                            onClick={() => handleTheme('Dark')}
+                        >
+                            <WbSunnyOutlined />
+                        </IconButton>}
+
                         <IconButton
                             aria-label="account of current user"
                             aria-controls="menu-appbar"
