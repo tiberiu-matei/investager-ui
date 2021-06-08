@@ -1,4 +1,4 @@
-import { Button, Link, TextField, Typography } from '@material-ui/core';
+import { Box, Button, CardActions, CardContent, Container, Link, makeStyles, TextField, Typography } from '@material-ui/core';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
@@ -7,16 +7,29 @@ import { LocalStorageKeys } from '../../models/localStorageKeys';
 import { LoginRequest } from '../../models/user';
 import { useAppDispatch } from '../../store/hooks';
 import { setUserDetails } from '../../store/userSlice';
+import { CenteredCard } from '../global/CenteredCard';
 
 type FormData = {
     email: string;
     password: string;
 };
 
+const useStyles = makeStyles({
+    textAlign: {
+        textAlign: 'center',
+    },
+    cardWidth: {
+        maxWidth: "440px",
+        width: "440px",
+        minWidth: "200px",
+    },
+});
+
 export function Login(): JSX.Element {
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
     const dispatch = useAppDispatch();
     const history = useHistory();
+    const classes = useStyles();
 
     const onSubmit = handleSubmit(async data => {
         const request: LoginRequest = {
@@ -36,21 +49,51 @@ export function Login(): JSX.Element {
     });
 
     return (
-        <form noValidate onSubmit={onSubmit}>
-            <TextField {...register("email", {
-                required: "Email is required",
-                pattern: {
-                    value: /\S+@\S+\.\S+/,
-                    message: "Email is not in a valid format"
-                }
-            })} id="email" label="Email" required type="email" error={errors.email !== undefined} helperText={errors.email?.message} />
+        <CenteredCard elevation={10} cardWidthClass={classes.cardWidth}>
+            <CardContent>
+                <form noValidate onSubmit={onSubmit}>
+                    <Box mt="5px">
+                        <Typography color="primary" className={classes.textAlign} variant="h4" >Investager</Typography>
+                    </Box>
 
-            <TextField {...register("password", { required: "Password is required" })}
-                id="password" label="Password" required type="password" error={errors.password !== undefined} helperText={errors.password?.message} />
+                    <Box mt="10px">
+                        <Typography className={classes.textAlign} variant="h6" >Login</Typography>
+                    </Box>
 
-            <Button aria-label="Login" id="submit" type="submit" variant="contained">Login</Button>
+                    <Box mt="10px">
+                        <Container>
+                            <TextField {...register("email", {
+                                required: "Email is required",
+                                pattern: {
+                                    value: /\S+@\S+\.\S+/,
+                                    message: "Email is not in a valid format"
+                                }
+                            })} id="email" label="Email" required type="email" fullWidth
+                                error={errors.email !== undefined} helperText={errors.email?.message} />
+                        </Container>
+                    </Box>
 
-            <Typography>Don&apos;t have an account? <Link component={RouterLink} to="/register">Register</Link></Typography>
-        </form>
+                    <Box mt="20px">
+                        <Container>
+                            <TextField {...register("password", { required: "Password is required" })}
+                                id="password" label="Password" required type="password" fullWidth
+                                error={errors.password !== undefined} helperText={errors.password?.message} />
+                        </Container>
+                    </Box>
+
+                    <Box mt="20px" display="flex" justifyContent="center">
+                        <Box>
+                            <CardActions>
+                                <Button size="large" color="primary" aria-label="Login" id="submit" type="submit" variant="contained">Login</Button>
+                            </CardActions>
+                        </Box>
+                    </Box>
+
+                    <Box mt="10px">
+                        <Typography className={classes.textAlign} >Don&apos;t have an account? <Link component={RouterLink} to="/register">Register</Link></Typography>
+                    </Box>
+                </form>
+            </CardContent>
+        </CenteredCard>
     );
 }
