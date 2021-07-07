@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ApiBaseRoutes } from "../models/apiBaseRoutes";
+import { ApiBaseRoutes } from "../models/app/apiBaseRoutes";
 import { LoginRequest, LoginResponse, RefreshTokenRequest, RefreshTokenResponse, RegisterRequest, RegisterResponse, UpdateThemeRequest, UpdateUserRequest, User } from "../models/user";
 import { GetInvestagerConfigWithBearer } from "./requestConfigs";
 

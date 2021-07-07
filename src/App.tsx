@@ -2,20 +2,16 @@ import { Box } from "@material-ui/core";
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import "./App.css";
-import { AppTheme } from "./components/global/AppTheme";
-import { Header } from "./components/global/Header";
-import { Home } from "./components/global/Home";
-import { Snackbar as InvestagerSnackbar } from "./components/global/Snackbar";
+import { AppSnackbar, AppTheme, Header, Home } from "./components/global";
 import { Login, Register } from "./components/user";
-import { useAppSelector } from "./store/hooks";
-import { selectUserLogged } from "./store/userSlice";
+import { selectUserLogged, useAppSelector } from "./store";
 
 function App(): JSX.Element {
     const isLogged = useAppSelector(selectUserLogged);
 
     return (
         <AppTheme>
-            <InvestagerSnackbar />
+            <AppSnackbar />
             <Router>
                 <Box height="100%" display="flex" flexDirection="column">
                     <Box>

@@ -1,5 +1,5 @@
 import { AxiosRequestConfig } from "axios";
-import { LocalStorageKeys } from "../models/localStorageKeys";
+import { LocalStorageKeys } from "../models/app/localStorageKeys";
 
 export function GetInvestagerConfigWithBearer(): AxiosRequestConfig {
     const accessToken = localStorage.getItem(LocalStorageKeys.accessToken);

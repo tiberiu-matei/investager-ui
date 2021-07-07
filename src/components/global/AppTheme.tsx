@@ -1,8 +1,7 @@
 import { createMuiTheme, CssBaseline } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/styles";
 import React from "react";
-import { useAppSelector } from "../../store/hooks";
-import { selectUserTheme } from "../../store/userSlice";
+import { selectUserTheme, useAppSelector } from "../../store";
 
 export function AppTheme(props: { children: React.ReactNode }): JSX.Element {
     let themeName = useAppSelector(selectUserTheme);

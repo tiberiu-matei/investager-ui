@@ -3,11 +3,10 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 import { UserApi } from '../../api';
-import { LocalStorageKeys } from '../../models/localStorageKeys';
+import { LocalStorageKeys } from '../../models/app';
 import { LoginRequest } from '../../models/user';
-import { useAppDispatch } from '../../store/hooks';
-import { setUserDetails, setUserTheme } from '../../store/userSlice';
-import { CenteredCard } from '../global/CenteredCard';
+import { setUserDetails, setUserTheme, useAppDispatch } from '../../store';
+import { CenteredCard } from '../global';
 
 type FormData = {
     email: string;
@@ -59,7 +58,7 @@ export function Login(): JSX.Element {
                     </Box>
 
                     <Box mt="10px">
-                        <Typography className={classes.textAlign} variant="h6" >Log In</Typography>
+                        <Typography className={classes.textAlign} variant="h6" >Log in</Typography>
                     </Box>
 
                     <Box mt="10px">
