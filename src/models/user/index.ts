@@ -8,3 +8,4 @@ export * from './refreshTokenResponse';
 export * from './updateUserRequest';
 export * from './updateThemeRequest';
 export * from './themeName';
+export * from './userStarredAsset';

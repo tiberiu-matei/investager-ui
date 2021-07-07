@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { LocalStorageKeys } from '../models/localStorageKeys';
+import { LocalStorageKeys } from '../models/app/localStorageKeys';
 import { ThemeName } from '../models/user';
 import { RootState } from '../store/store';
 
