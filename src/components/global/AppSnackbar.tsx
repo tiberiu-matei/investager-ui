@@ -1,10 +1,9 @@
 import { Snackbar as MuiSnackbar } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
-import { useAppSelector } from '../../store/hooks';
-import { selectSnackbar } from '../../store/snackbarSlice';
+import { selectSnackbar, useAppSelector } from '../../store';
 
-export function Snackbar(): JSX.Element {
+export function AppSnackbar(): JSX.Element {
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const snackbarState = useAppSelector(selectSnackbar);
 

@@ -4,8 +4,7 @@ import React from 'react';
 import { useHistory } from 'react-router';
 import { UserApi } from '../../api';
 import { ThemeName } from '../../models/user';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { selectUserLogged, selectUserTheme, setUserDetails, setUserTheme } from '../../store/userSlice';
+import { selectUserLogged, selectUserTheme, setUserDetails, setUserTheme, useAppDispatch, useAppSelector } from '../../store';
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -24,6 +23,13 @@ export function Header(): JSX.Element {
     const history = useHistory();
     const isLogged = useAppSelector(selectUserLogged);
     const theme = useAppSelector(selectUserTheme);
+    const assets = useAppSelector(selectasset)
+
+    useEffect(() => {
+        if (snackbarState.text) {
+            setSnackbarOpen(true);
+        }
+    }, [snackbarState]);
 
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);

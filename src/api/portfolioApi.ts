@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ApiBaseRoutes } from "../models/apiBaseRoutes";
+import { ApiBaseRoutes } from "../models/app/apiBaseRoutes";
 import { Portfolio, UpdatePortfolioRequest } from "../models/portfolio";
 import { GetInvestagerConfigWithBearer } from "./requestConfigs";
 
