@@ -1,30 +1,29 @@
-import axios from "axios";
-import { ApiBaseRoutes } from "../models/app/apiBaseRoutes";
-import { Portfolio, UpdatePortfolioRequest } from "../models/portfolio";
-import { GetInvestagerConfigWithBearer } from "./requestConfigs";
+import { ApiBaseRoutes } from '../models/app/apiBaseRoutes';
+import { Portfolio, UpdatePortfolioRequest } from '../models/portfolio';
+import axiosClient from './axiosClient';
 
 export async function Get(portfolioId: number): Promise<Portfolio> {
-    const response = await axios.get<Portfolio>(`${ApiBaseRoutes.portfolio}/${portfolioId}`, GetInvestagerConfigWithBearer());
+    const response = await axiosClient.get<Portfolio>(`${ApiBaseRoutes.portfolio}/${portfolioId}`);
 
     return response.data;
 }
 
 export async function GetAll(): Promise<Portfolio[]> {
-    const response = await axios.get<Portfolio[]>(ApiBaseRoutes.portfolio, GetInvestagerConfigWithBearer());
+    const response = await axiosClient.get<Portfolio[]>(ApiBaseRoutes.portfolio);
 
     return response.data;
 }
 
 export async function Create(request: UpdatePortfolioRequest): Promise<Portfolio> {
-    const response = await axios.post<Portfolio>(ApiBaseRoutes.portfolio, request, GetInvestagerConfigWithBearer());
+    const response = await axiosClient.post<Portfolio>(ApiBaseRoutes.portfolio, request);
 
     return response.data;
 }
 
 export async function Update(portfolioId: number, request: UpdatePortfolioRequest): Promise<void> {
-    await axios.put(`${ApiBaseRoutes.portfolio}/${portfolioId}`, request, GetInvestagerConfigWithBearer());
+    await axiosClient.put(`${ApiBaseRoutes.portfolio}/${portfolioId}`, request);
 }
 
 export async function Delete(portfolioId: number): Promise<void> {
-    await axios.delete(`${ApiBaseRoutes.portfolio}/${portfolioId}`, GetInvestagerConfigWithBearer());
+    await axiosClient.delete(`${ApiBaseRoutes.portfolio}/${portfolioId}`);
 }

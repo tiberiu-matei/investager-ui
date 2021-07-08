@@ -1,10 +1,10 @@
-import { Typography } from '@material-ui/core';
 import React from 'react';
+import { StarredAssets } from '../asset/StarredAssets';
 
 export function Home(): JSX.Element {
     return (
         <>
-            <Typography>Welcome Home</Typography>
+            <StarredAssets></StarredAssets>
         </>
     );
 }

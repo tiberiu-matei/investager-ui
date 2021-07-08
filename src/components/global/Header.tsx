@@ -4,7 +4,14 @@ import React from 'react';
 import { useHistory } from 'react-router';
 import { UserApi } from '../../api';
 import { ThemeName } from '../../models/user';
-import { selectUserLogged, selectUserTheme, setUserDetails, setUserTheme, useAppDispatch, useAppSelector } from '../../store';
+import {
+    selectUserLogged,
+    selectUserTheme,
+    setUserDetails,
+    setUserTheme,
+    useAppDispatch,
+    useAppSelector
+} from '../../store';
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -23,13 +30,6 @@ export function Header(): JSX.Element {
     const history = useHistory();
     const isLogged = useAppSelector(selectUserLogged);
     const theme = useAppSelector(selectUserTheme);
-    const assets = useAppSelector(selectasset)
-
-    useEffect(() => {
-        if (snackbarState.text) {
-            setSnackbarOpen(true);
-        }
-    }, [snackbarState]);
 
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
@@ -64,21 +64,25 @@ export function Header(): JSX.Element {
                 </Typography>
                 {isLogged && (
                     <div>
-                        {theme !== 'Light' && <IconButton
-                            className={classes.themeMargin}
-                            aria-label="theme"
-                            onClick={() => handleTheme('Light')}
-                        >
-                            <WbSunny />
-                        </IconButton>}
+                        {theme !== 'Light' && (
+                            <IconButton
+                                className={classes.themeMargin}
+                                aria-label="theme"
+                                onClick={() => handleTheme('Light')}
+                            >
+                                <WbSunny />
+                            </IconButton>
+                        )}
 
-                        {theme === 'Light' && <IconButton
-                            className={classes.themeMargin}
-                            aria-label="theme"
-                            onClick={() => handleTheme('Dark')}
-                        >
-                            <WbSunnyOutlined />
-                        </IconButton>}
+                        {theme === 'Light' && (
+                            <IconButton
+                                className={classes.themeMargin}
+                                aria-label="theme"
+                                onClick={() => handleTheme('Dark')}
+                            >
+                                <WbSunnyOutlined />
+                            </IconButton>
+                        )}
 
                         <IconButton
                             aria-label="account of current user"
