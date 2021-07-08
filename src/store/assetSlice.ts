@@ -1,34 +1,71 @@
-
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit';
+import { AssetApi, TimeSeriesApi } from '../api';
 import { AssetSummary } from '../models/asset';
-import { TimeSeries } from '../models/timeSeries';
+import { TimeSeriesResponse } from '../models/timeSeries';
 import { RootState } from '../store/store';
 
 export interface AssetState {
-    assetSummaries: AssetSummary[];
-    assetTimeSeries: TimeSeries[];
+    assetSummaries: AssetSummary[] | undefined;
+    assetTimeSeries: TimeSeriesResponse[] | undefined;
 }
 
 const initialState: AssetState = {
-    assetSummaries: new Array<AssetSummary>(),
-    assetTimeSeries: new Array<TimeSeries>(),
+    assetSummaries: undefined,
+    assetTimeSeries: undefined,
 };
+
+export const fetchAssetSummaries = createAsyncThunk('asset/fetchAssetSummaries', async () => {
+    const response = await AssetApi.GetAll();
+
+    return response;
+});
+
+export const fetchAssetTimeSeriesByKey = createAsyncThunk('asset/fetchAssetTimeSeriesByKey', async (key: string) => {
+    const response = await TimeSeriesApi.Get(key);
+
+    return response;
+});
 
 export const assetSlice = createSlice({
     name: 'asset',
     initialState,
-    reducers: {
-        setAssetSummaries: (state, action: PayloadAction<AssetSummary[]>) => {
+    reducers: {},
+    extraReducers: (builder) => {
+        builder.addCase(fetchAssetSummaries.fulfilled, (state, action) => {
             state.assetSummaries = action.payload;
-        },
-        setAssetTimeSeries: (state, action: PayloadAction<TimeSeries>) => {
-            state.assetSummaries = action.payload;
-        },
+        });
+        builder.addCase(fetchAssetSummaries.rejected, (state, action) => {
+            state.assetSummaries = undefined;
+        });
+
+        builder.addCase(fetchAssetTimeSeriesByKey.fulfilled, (state, action) => {
+            const newTimeSeries = state.assetTimeSeries
+                ? [...state.assetTimeSeries].filter((e) => e.key != action.payload.key)
+                : new Array<TimeSeriesResponse>();
+
+            newTimeSeries.push(action.payload);
+
+            state.assetTimeSeries = newTimeSeries;
+        });
+        builder.addCase(fetchAssetTimeSeriesByKey.rejected, (state, action) => {
+            const key = action.meta.arg;
+            const newTimeSeries = state.assetTimeSeries
+                ? [...state.assetTimeSeries].filter((e) => e.key != key)
+                : new Array<TimeSeriesResponse>();
+
+            state.assetTimeSeries = newTimeSeries;
+        });
     },
 });
 
-export const { setAssetSummaries, setAssetTimeSeries } = assetSlice.actions;
+export const selectAssetSummaries = (state: RootState): AssetSummary[] | undefined => state.asset.assetSummaries;
 
-export const selectAssetSummaries = (state: RootState): AssetState => state.;
+const selectAssetTimeSeries = (state: RootState): TimeSeriesResponse[] | undefined => state.asset.assetTimeSeries;
+
+export const createSelectAssetTimeSeriesByKey = (key: string) => {
+    return createSelector([selectAssetTimeSeries], (timeSeries) => {
+        return timeSeries?.find((e) => e.key === key);
+    });
+};
 
 export default assetSlice.reducer;

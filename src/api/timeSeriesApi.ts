@@ -1,10 +1,9 @@
-import axios from "axios";
-import { ApiBaseRoutes } from "../models/app/apiBaseRoutes";
-import { TimeSeries } from "../models/timeSeries";
-import { GetInvestagerConfigWithBearer } from "./requestConfigs";
+import { ApiBaseRoutes } from '../models/app/apiBaseRoutes';
+import { TimeSeriesResponse } from '../models/timeSeries';
+import axiosClient from './axiosClient';
 
-export async function Get(key: string): Promise<TimeSeries> {
-    const response = await axios.get<TimeSeries>(`${ApiBaseRoutes.timeSeries}/${key}`, GetInvestagerConfigWithBearer());
+export async function Get(key: string): Promise<TimeSeriesResponse> {
+    const response = await axiosClient.get<TimeSeriesResponse>(`${ApiBaseRoutes.timeSeries}/${key}`);
 
     return response.data;
 }
