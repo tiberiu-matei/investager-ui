@@ -55,7 +55,7 @@ export const userSlice = createSlice({
         builder.addCase(fetchUserStarredAssets.fulfilled, (state, action) => {
             state.starredAssets = action.payload;
         });
-        builder.addCase(fetchUserStarredAssets.rejected, (state, action) => {
+        builder.addCase(fetchUserStarredAssets.rejected, (state) => {
             state.starredAssets = undefined;
         });
     },

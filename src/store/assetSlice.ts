@@ -1,8 +1,10 @@
-import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSelector, createSlice, OutputSelector } from '@reduxjs/toolkit';
 import { AssetApi, TimeSeriesApi } from '../api';
 import { AssetSummary } from '../models/asset';
 import { TimeSeriesResponse } from '../models/timeSeries';
 import { RootState } from '../store/store';
+import { SnackbarState } from './snackbarSlice';
+import { UserState } from './userSlice';
 
 export interface AssetState {
     assetSummaries: AssetSummary[] | undefined;
@@ -34,7 +36,7 @@ export const assetSlice = createSlice({
         builder.addCase(fetchAssetSummaries.fulfilled, (state, action) => {
             state.assetSummaries = action.payload;
         });
-        builder.addCase(fetchAssetSummaries.rejected, (state, action) => {
+        builder.addCase(fetchAssetSummaries.rejected, (state) => {
             state.assetSummaries = undefined;
         });
 
@@ -62,7 +64,13 @@ export const selectAssetSummaries = (state: RootState): AssetSummary[] | undefin
 
 const selectAssetTimeSeries = (state: RootState): TimeSeriesResponse[] | undefined => state.asset.assetTimeSeries;
 
-export const createSelectAssetTimeSeriesByKey = (key: string) => {
+export const createSelectAssetTimeSeriesByKey = (
+    key: string
+): OutputSelector<
+    { snackbar: SnackbarState; user: UserState; asset: AssetState },
+    TimeSeriesResponse | undefined,
+    (res: TimeSeriesResponse[] | undefined) => TimeSeriesResponse | undefined
+> => {
     return createSelector([selectAssetTimeSeries], (timeSeries) => {
         return timeSeries?.find((e) => e.key === key);
     });

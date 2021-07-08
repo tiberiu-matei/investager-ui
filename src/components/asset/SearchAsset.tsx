@@ -12,7 +12,7 @@ export function SearchAsset(props: {
 }): JSX.Element {
     const dispatch = useAppDispatch();
 
-    const onSearchChange = async (event: ChangeEvent<any>, value: AssetSummary | null) => {
+    const onSearchChange = async (_event: ChangeEvent<unknown>, value: AssetSummary | null) => {
         const highestOrder = props.starredAssets && props.starredAssets[props.starredAssets.length - 1];
         const request = { assetId: value?.id ?? 0, displayOrder: (highestOrder?.displayOrder ?? 0) + 10 };
 

@@ -67,7 +67,7 @@ export function StarredAsset(props: { assetSummary: AssetSummary; timeRanges: Ti
         }
     }, []);
 
-    const handleUnstar = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    const handleUnstar = async () => {
         await AssetApi.Unstar(props.assetSummary.id);
         dispatch(unstarAsset(props.assetSummary.id));
     };
