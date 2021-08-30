@@ -55,6 +55,4 @@ instance.interceptors.response.use(
     }
 );
 
-console.log('execut me please god');
-
 export default instance;

@@ -1,3 +1,5 @@
+import { AssetGainLoss } from "./assetGainLoss";
+
 export interface AssetSummary {
     id: number;
     symbol: string;
@@ -6,4 +8,5 @@ export interface AssetSummary {
     name: string;
     industry: string;
     currency: string;
+    gainLoss: AssetGainLoss;
 }

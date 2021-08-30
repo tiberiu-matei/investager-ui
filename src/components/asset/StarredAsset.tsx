@@ -1,20 +1,15 @@
 import { Box, Card, IconButton, makeStyles, Typography } from '@material-ui/core';
 import { Star } from '@material-ui/icons';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { AssetApi } from '../../api';
-import { AssetSummary } from '../../models/asset';
-import { TimePoint, TimeRange, TimeSeries } from '../../models/timeSeries';
-import {
-    createSelectAssetTimeSeriesByKey,
-    fetchAssetTimeSeriesByKey,
-    unstarAsset,
-    useAppDispatch,
-    useAppSelector
-} from '../../store';
+import { UserStarredAsset } from '../../models/user';
+import { unstarAsset, useAppDispatch } from '../../store';
 
 const useStyles = makeStyles(() => ({
-    cardWidth: {
-        maxWidth: "1000px",  
+    mainCard: {
+        maxWidth: '1000px',
+        padding: '5px',
+        marginBottom: '10px',
     },
     gain: {
         color: 'green',
@@ -23,102 +18,88 @@ const useStyles = makeStyles(() => ({
         color: 'red',
     },
     gainLossFlex: {
-        flex: "1 1 60px"
-    }
+        flex: '1 1 60px',
+    },
 }));
 
-const oneWeekInMs = (): number => 7 * 24 * 60 * 60 * 1000;
+const noGainLossBox = (flexClass: string) => (
+    <Box
+        className={flexClass}
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+    >
+        <Box>-</Box>
+    </Box>
+);
 
-const getClosestPoint = (points: TimePoint[], target: Date): TimePoint | null => {
-    const targetUtcTime = target.getTime() + target.getTimezoneOffset() * 60 * 1000;
-    for (let i = 0; i < points.length; i++) {
-        const pointTime = points[i].time.getTime();
-        if (pointTime < targetUtcTime) {
-            if (targetUtcTime - pointTime > oneWeekInMs()) {
-                return null;
-            }
-
-            if (i > 0) {
-                i--;
-            }
-
-            return points[i];
-        }
+const gainLossBox = (value: number, gainClass: string, lossClass: string, flexClass: string) => {
+    if (value >= 0) {
+        return (
+            <Box
+                className={flexClass}
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                alignItems="center"
+            >
+                <Box className={gainClass}>+{value.toFixed(2)}%</Box>
+            </Box>
+        );
+    } else {
+        return (
+            <Box
+                className={flexClass}
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                alignItems="center"
+            >
+                <Box className={lossClass}>{value.toFixed(2)}%</Box>
+            </Box>
+        );
     }
-
-    return null;
 };
 
-const noGainLoss = (key: number, flexClass: string) => <Box key={key} className={flexClass}>-</Box>;
-
-export function StarredAsset(props: { assetSummary: AssetSummary; timeRanges: TimeRange[] }): JSX.Element {
+export function StarredAsset(props: { starredAsset: UserStarredAsset }): JSX.Element {
     const dispatch = useAppDispatch();
-    const timeSeriesResponse = useAppSelector(createSelectAssetTimeSeriesByKey(props.assetSummary.key));
-    const timeSeries: TimeSeries | undefined = timeSeriesResponse && {
-        key: timeSeriesResponse.key,
-        points: timeSeriesResponse.points.map((e) => ({ time: new Date(e.time), value: e.value })),
-    };
 
     const classes = useStyles();
 
-    useEffect(() => {
-        if (!timeSeriesResponse) {
-            dispatch(fetchAssetTimeSeriesByKey(props.assetSummary.key));
-        }
-    }, []);
-
     const handleUnstar = async () => {
-        await AssetApi.Unstar(props.assetSummary.id);
-        dispatch(unstarAsset(props.assetSummary.id));
+        await AssetApi.Unstar(props.starredAsset.assetId);
+        dispatch(unstarAsset(props.starredAsset.assetId));
     };
 
     return (
-        <Card elevation={10} className={classes.cardWidth}>
+        <Card elevation={10} className={classes.mainCard}>
             <Box display="flex">
                 <Box flex="0 0 400px">
-                    <Typography variant="h5">{props.assetSummary.symbol}</Typography>
-                    <Typography variant="body2">
-                        {props.assetSummary.name}
-                    </Typography>
-                    <Typography>
-                        {props.assetSummary.exchange}
-                    </Typography>
+                    <Typography variant="h5">{props.starredAsset.symbol}</Typography>
+                    <Typography variant="body2">{props.starredAsset.name}</Typography>
+                    <Typography>{props.starredAsset.exchange}</Typography>
                 </Box>
-                {props.timeRanges.map((e) => {
-                    const key = e.from.getTime();
-
-                    if (!timeSeries) {
-                        return noGainLoss(key, classes.gainLossFlex);
-                    }
-
-                    const fromPoint = getClosestPoint(timeSeries.points, e.from);
-                    const toPoint = getClosestPoint(timeSeries.points, e.to);
-
-                    if (!fromPoint || !toPoint) {
-                        return noGainLoss(key, classes.gainLossFlex);
-                    }
-
-                    const difference = ((toPoint.value - fromPoint.value) / fromPoint.value) * 100;
-                    const displayDifference = difference.toFixed(2);
-
-                    if (difference >= 0) {
-                        return (
-                            <Box key={key} className={`${classes.gain} ${classes.gainLossFlex}`}>
-                                +{displayDifference}%
-                            </Box>
-                        );
-                    } else {
-                        return (
-                            <Box key={key} className={`${classes.loss} ${classes.gainLossFlex}`}>
-                                {displayDifference}%
-                            </Box>
-                        );
-                    }
-                })}
-                <Box flex="0 0 50px">
-                    <IconButton aria-label="remove bookmark" onClick={handleUnstar}>
-                        <Star />
-                    </IconButton>
+                {props.starredAsset.gainLoss.last3Days === null
+                    ? noGainLossBox(classes.gainLossFlex)
+                    : gainLossBox(
+                          props.starredAsset.gainLoss.last3Days,
+                          classes.gain,
+                          classes.loss,
+                          classes.gainLossFlex
+                      )}
+                <Box
+                    display="flex"
+                    flex="0 0 50px"
+                    flexDirection="column"
+                    justifyContent="center"
+                    alignItems="center"
+                >
+                    <Box>
+                        <IconButton aria-label="remove bookmark" onClick={handleUnstar}>
+                            <Star />
+                        </IconButton>
+                    </Box>
                 </Box>
             </Box>
         </Card>

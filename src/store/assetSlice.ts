@@ -1,45 +1,32 @@
 import { createAsyncThunk, createSelector, createSlice, OutputSelector } from '@reduxjs/toolkit';
-import { AssetApi, TimeSeriesApi } from '../api';
-import { AssetSummary } from '../models/asset';
+import { TimeSeriesApi } from '../api';
 import { TimeSeriesResponse } from '../models/timeSeries';
 import { RootState } from '../store/store';
 import { SnackbarState } from './snackbarSlice';
 import { UserState } from './userSlice';
 
 export interface AssetState {
-    assetSummaries: AssetSummary[] | undefined;
     assetTimeSeries: TimeSeriesResponse[] | undefined;
 }
 
 const initialState: AssetState = {
-    assetSummaries: undefined,
     assetTimeSeries: undefined,
 };
 
-export const fetchAssetSummaries = createAsyncThunk('asset/fetchAssetSummaries', async () => {
-    const response = await AssetApi.GetAll();
+export const fetchAssetTimeSeriesByKey = createAsyncThunk(
+    'asset/fetchAssetTimeSeriesByKey',
+    async (key: string) => {
+        const response = await TimeSeriesApi.Get(key);
 
-    return response;
-});
-
-export const fetchAssetTimeSeriesByKey = createAsyncThunk('asset/fetchAssetTimeSeriesByKey', async (key: string) => {
-    const response = await TimeSeriesApi.Get(key);
-
-    return response;
-});
+        return response;
+    }
+);
 
 export const assetSlice = createSlice({
     name: 'asset',
     initialState,
     reducers: {},
     extraReducers: (builder) => {
-        builder.addCase(fetchAssetSummaries.fulfilled, (state, action) => {
-            state.assetSummaries = action.payload;
-        });
-        builder.addCase(fetchAssetSummaries.rejected, (state) => {
-            state.assetSummaries = undefined;
-        });
-
         builder.addCase(fetchAssetTimeSeriesByKey.fulfilled, (state, action) => {
             const newTimeSeries = state.assetTimeSeries
                 ? [...state.assetTimeSeries].filter((e) => e.key != action.payload.key)
@@ -60,9 +47,8 @@ export const assetSlice = createSlice({
     },
 });
 
-export const selectAssetSummaries = (state: RootState): AssetSummary[] | undefined => state.asset.assetSummaries;
-
-const selectAssetTimeSeries = (state: RootState): TimeSeriesResponse[] | undefined => state.asset.assetTimeSeries;
+const selectAssetTimeSeries = (state: RootState): TimeSeriesResponse[] | undefined =>
+    state.asset.assetTimeSeries;
 
 export const createSelectAssetTimeSeriesByKey = (
     key: string

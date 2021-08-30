@@ -1,10 +1,10 @@
 import { ApiBaseRoutes } from '../models/app/apiBaseRoutes';
-import { AssetSummary } from '../models/asset';
+import { AssetSearchResponse, StarAssetRequest } from '../models/asset';
 import { UserStarredAsset } from '../models/user';
 import axiosClient from './axiosClient';
 
-export async function GetAll(): Promise<AssetSummary[]> {
-    const response = await axiosClient.get<AssetSummary[]>(`${ApiBaseRoutes.asset}/all`);
+export async function Search(searchText: string): Promise<AssetSearchResponse> {
+    const response = await axiosClient.get<AssetSearchResponse>(`${ApiBaseRoutes.asset}/search/${searchText}?max=10`);
 
     return response.data;
 }
@@ -15,7 +15,7 @@ export async function GetStarred(): Promise<UserStarredAsset[]> {
     return response.data;
 }
 
-export async function Star(request: UserStarredAsset): Promise<void> {
+export async function Star(request: StarAssetRequest): Promise<void> {
     await axiosClient.post(`${ApiBaseRoutes.asset}/star`, request);
 }
 
