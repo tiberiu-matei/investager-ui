@@ -2,7 +2,7 @@ import { Box, Button, CardActions, CardContent, Container, Link, makeStyles, Tex
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
-import { UserApi } from '../../api';
+import { updateAxiosAccessToken, UserApi } from '../../api';
 import { LocalStorageKeys } from '../../models/app';
 import { RegisterRequest } from '../../models/user';
 import { setSnackbar, setUserDetails, useAppDispatch } from '../../store';
@@ -44,6 +44,7 @@ export function Register(): JSX.Element {
         localStorage.setItem(LocalStorageKeys.accessToken, response.accessToken);
         localStorage.setItem(LocalStorageKeys.refreshToken, response.refreshToken);
         localStorage.setItem(LocalStorageKeys.displayName, request.displayName);
+        updateAxiosAccessToken(response.accessToken);
 
         dispatch(setSnackbar({ text: 'Account registered successfully', severity: 'success' }));
         dispatch(setUserDetails({ displayName: request.displayName, logged: true }));

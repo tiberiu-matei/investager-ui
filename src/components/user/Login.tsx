@@ -2,7 +2,7 @@ import { Box, Button, CardActions, CardContent, Container, Link, makeStyles, Tex
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
-import { UserApi } from '../../api';
+import { updateAxiosAccessToken, UserApi } from '../../api';
 import { LocalStorageKeys } from '../../models/app';
 import { LoginRequest } from '../../models/user';
 import { setUserDetails, setUserTheme, useAppDispatch } from '../../store';
@@ -42,6 +42,7 @@ export function Login(): JSX.Element {
         localStorage.setItem(LocalStorageKeys.refreshToken, response.refreshToken);
         localStorage.setItem(LocalStorageKeys.displayName, response.displayName);
         localStorage.setItem(LocalStorageKeys.theme, response.theme);
+        updateAxiosAccessToken(response.accessToken);
 
         dispatch(setUserDetails({ displayName: response.displayName, logged: true }));
         dispatch(setUserTheme(response.theme));
