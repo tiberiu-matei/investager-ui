@@ -1,16 +1,14 @@
-import { createAsyncThunk, createSelector, createSlice, OutputSelector } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TimeSeriesApi } from '../api';
 import { TimeSeriesResponse } from '../models/timeSeries';
 import { RootState } from '../store/store';
-import { SnackbarState } from './snackbarSlice';
-import { UserState } from './userSlice';
 
 export interface AssetState {
-    assetTimeSeries: TimeSeriesResponse[] | undefined;
+    assetTimeSeries: TimeSeriesResponse[];
 }
 
 const initialState: AssetState = {
-    assetTimeSeries: undefined,
+    assetTimeSeries: new Array<TimeSeriesResponse>(),
 };
 
 export const fetchAssetTimeSeriesByKey = createAsyncThunk(
@@ -28,38 +26,22 @@ export const assetSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(fetchAssetTimeSeriesByKey.fulfilled, (state, action) => {
-            const newTimeSeries = state.assetTimeSeries
-                ? [...state.assetTimeSeries].filter((e) => e.key != action.payload.key)
-                : new Array<TimeSeriesResponse>();
+            const key = action.meta.arg;
+            const newTimeSeries = [...state.assetTimeSeries].filter((e) => e.key != key);
 
-            newTimeSeries.push(action.payload);
+            newTimeSeries.push({ key: key, points: action.payload });
 
             state.assetTimeSeries = newTimeSeries;
         });
         builder.addCase(fetchAssetTimeSeriesByKey.rejected, (state, action) => {
             const key = action.meta.arg;
-            const newTimeSeries = state.assetTimeSeries
-                ? [...state.assetTimeSeries].filter((e) => e.key != key)
-                : new Array<TimeSeriesResponse>();
+            const newTimeSeries = [...state.assetTimeSeries].filter((e) => e.key != key);
 
             state.assetTimeSeries = newTimeSeries;
         });
     },
 });
 
-const selectAssetTimeSeries = (state: RootState): TimeSeriesResponse[] | undefined =>
-    state.asset.assetTimeSeries;
-
-export const createSelectAssetTimeSeriesByKey = (
-    key: string
-): OutputSelector<
-    { snackbar: SnackbarState; user: UserState; asset: AssetState },
-    TimeSeriesResponse | undefined,
-    (res: TimeSeriesResponse[] | undefined) => TimeSeriesResponse | undefined
-> => {
-    return createSelector([selectAssetTimeSeries], (timeSeries) => {
-        return timeSeries?.find((e) => e.key === key);
-    });
-};
+export const selectAssetTimeSeries = (state: RootState): TimeSeriesResponse[] => state.asset.assetTimeSeries;
 
 export default assetSlice.reducer;
