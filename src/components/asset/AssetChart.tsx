@@ -26,13 +26,6 @@ const formatTick = (timeEpochMs: number) => {
     return date.toLocaleDateString();
 };
 
-const getDefaultChartRange = () => {
-    const dateNow = new Date();
-    const from = new Date(new Date().setFullYear(dateNow.getFullYear() - 1)).getTime();
-
-    return { from: from, to: dateNow.getTime() };
-};
-
 export function AssetChart(props: { assetKey: string }): JSX.Element {
     const dispatch = useAppDispatch();
     const theme = useTheme();
@@ -43,7 +36,15 @@ export function AssetChart(props: { assetKey: string }): JSX.Element {
     const [timePoints, setTimePoints] = useState<{ timeEpochMs: number; value: number }[] | undefined>(
         undefined
     );
-    const [chartRange, setChartRange] = useState(getDefaultChartRange());
+
+    const getDefaultChartRange = () => {
+        const dateNow = new Date();
+        const from = new Date(new Date().setFullYear(dateNow.getFullYear() - 1)).getTime();
+
+        return { from: from, to: dateNow.getTime() };
+    };
+
+    const chartRange = getDefaultChartRange();
 
     useEffect(() => {
         dispatch(fetchAssetTimeSeriesByKey(props.assetKey));
