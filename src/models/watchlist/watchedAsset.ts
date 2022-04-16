@@ -1,6 +1,6 @@
-import { AssetGainLoss } from "../asset";
+import { GainLoss } from '../timeSeries';
 
-export interface UserStarredAsset {
+export interface WatchedAsset {
     assetId: number;
     symbol: string;
     exchange: string;
@@ -9,5 +9,5 @@ export interface UserStarredAsset {
     industry: string;
     currency: string;
     displayOrder: number;
-    gainLoss: AssetGainLoss;
+    gainLoss: GainLoss;
 }

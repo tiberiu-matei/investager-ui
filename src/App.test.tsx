@@ -5,11 +5,12 @@ import { store } from './store/store';
 import App from './App';
 
 test('renders have an account link', () => {
-  const { getByText } = render(
-    <Provider store={store}>
-      <App />
-    </Provider>
-  );
+    const { getByText } = render(
+        <Provider store={store}>
+            <App />
+        </Provider>
+    );
 
-  expect(getByText(/have an account/i)).toBeInTheDocument();
+    // ui ui ui
+    expect(getByText(/have an account/i)).toBeInTheDocument();
 });

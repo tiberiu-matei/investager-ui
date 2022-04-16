@@ -1,4 +1,4 @@
-export interface AssetGainLoss {
+export interface GainLoss {
     last3Days: number;
     lastWeek: number;
     last2Weeks: number;
